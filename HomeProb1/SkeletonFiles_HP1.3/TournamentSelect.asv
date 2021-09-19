@@ -1,6 +1,6 @@
 function selectedIndividualIndex = TournamentSelect(fitnessList, tournamentProbability, tournamentSize)
     populationSize = size(fitnessList, 2);
-    selectedForTournamentIndexes = fix(rand(1, tournamentSize)*(populationSize - 1) + 1);
+    selectedForTournamentIndexes = fix(rand(1, tournamentSize)*(1 + populationSize));
 
     fitnessTournament = zeros(1, tournamentSize);
 
@@ -8,15 +8,15 @@ function selectedIndividualIndex = TournamentSelect(fitnessList, tournamentProba
         fitnessTournament(i) = fitnessList(selectedForTournamentIndexes(i));
     end
     
-    [~, sortedTournamentIndexes] = sort(fitnessTournament, 'descend');
+    [sortedFitnessTournament, sortedIndexes] = sort(fitnessTournament, 'descend');
     
     % Default worst individual
-    selectedIndividualIndex = sortedTournamentIndexes(end);
+    selectedIndividualIndex = sortedIndexes(end);
 
     r = rand;
     for i = 1:tournamentSize
         if r < tournamentProbability
-            selectedIndividualIndex = sortedTournamentIndexes(i);
+            selectedIndividualIndex = sortedIndexes(i);
         end
     end
 end

@@ -7,7 +7,7 @@ tournamentSize, tournamentProbability, crossoverProbability, mutationProbability
  population = InitializePopulation(populationSize,numberOfGenes);
  for generation = 1:numberOfGenerations
    maximumFitness  = 0.0;
-   fitnessList = zeros(populationSize);
+   fitnessList = zeros(1,populationSize);
    for i = 1:populationSize
      chromosome = population(i,:);
      variableValues = DecodeChromosome(chromosome,numberOfVariables,maximumVariableValue);
@@ -18,7 +18,7 @@ tournamentSize, tournamentProbability, crossoverProbability, mutationProbability
         bestVariableValues = variableValues;
     end
    end
- 
+
    temporaryPopulation = population;  
    for i = 1:2:populationSize
     i1 = TournamentSelect(fitnessList,tournamentProbability,tournamentSize);

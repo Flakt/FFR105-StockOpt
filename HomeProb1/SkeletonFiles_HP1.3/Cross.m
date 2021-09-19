@@ -7,10 +7,11 @@ function newIndividuals = Cross(individual1, individual2)
     newIndividuals = zeros(2, nGenes);
     for i = 1:nGenes
         if (i <= crossoverPoint)
-            newIndividuals(1,j) = individual1(j);
-            newIndividuals(2,j) = individual2(j);
+            newIndividuals(1,i) = individual1(i);
+            newIndividuals(2,i) = individual2(i);
         else
-            newIndividuals(1,j) =  individual2(j);
-            newIndividuals(2,j) = individual1(j);
-
+            newIndividuals(1,i) =  individual2(i);
+            newIndividuals(2,i) = individual1(i);
+        end
+    end
 end
