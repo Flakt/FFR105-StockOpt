@@ -10,11 +10,10 @@ function iterationValues = RunNewtonRaphson(polynomialCoefficients, startingPoin
     % Check polynomial
     if length(polynomialCoefficients) < 3
         fprintf('Error: polynomial must be 2 or larger')
-        exit;
     end
     
     % Init some variables
-    x = Inf;
+    x = 1;
     nextPoint = startingPoint;
     iterationValues = [];
     
@@ -27,7 +26,6 @@ function iterationValues = RunNewtonRaphson(polynomialCoefficients, startingPoin
         % Check for division by zero
         if fDoublePrime == 0
             fprintf('Error: second order derivative is 0')
-            exit;
         end
         
         nextPoint = StepNewtonRaphson(x, fPrime, fDoublePrime);

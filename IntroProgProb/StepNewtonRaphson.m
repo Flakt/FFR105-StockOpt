@@ -3,4 +3,9 @@
 % clear error message should be given.
 
 function xNext = StepNewtonRaphson(x, fPrime, fDoublePrime)
+   if (fDoublePrime == 0)
+      fprintf("Error: f'' = 0");
+   end
+
    xNext = x - (fPrime / fDoublePrime);
+end
