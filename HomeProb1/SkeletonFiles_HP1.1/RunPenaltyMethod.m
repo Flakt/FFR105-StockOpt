@@ -20,7 +20,7 @@ xStart =  [1, 2];
 gradientTolerance = 1E-6;
 
 for i = 1:length(muValues)
- mu = muValues(i);x
+ mu = muValues(i);
  x = RunGradientDescent(xStart,mu,eta,gradientTolerance);
  sprintf('x(1) = %3f, x(2) = %3f mu = %d',x(1),x(2),mu)
 end
