@@ -35,11 +35,11 @@ function node = GetNode(currentCityIndex, tabuList, pheromoneLevel, visibility, 
     
     % For cases where r is bigger than all probs in probE, select highest
     % as default
-    %if isempty(candidateIndexes)
-    %    node = sortedIndexes(1);
-    %else  
-    %    node = candidateIndexes(1);
-    %end
+    if isempty(candidateIndexes)
+        node = sortedIndexes(1);
+    else  
+        node = candidateIndexes(1);
+    end
 
-    node = sortedIndexes(1);
+    % node = sortedIndexes(1);
 end

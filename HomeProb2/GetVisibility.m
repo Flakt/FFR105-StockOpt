@@ -5,7 +5,7 @@ function visibility = GetVisibility(cityLocation)
     for i = 1:numberOfCities
         for j = 1 + 1:numberOfCities
             % Get the euclidean distance
-            distance = norm(cityLocation(j) - cityLocation(i));
+            distance = norm(cityLocation(j, :) - cityLocation(i, :));
             n_ij = 1.0 / distance;
             
             visibility(i,j) = n_ij;
