@@ -1,4 +1,6 @@
-function [travelTime, distance] = RunTruckSim(wIH, wHO, slopeSet, slopeIndex, slopeLength)
+function [travelTime, distance, slopeAngles, brakePreassures, gears, velocities, temps, slopePositions] = RunTruckSim(wIH, wHO,...
+                                                                                          slopeSet, slopeIndex,...
+                                                                                          slopeLength)
 
      velocity = 20;
      deltaTime = 0.1;
@@ -20,11 +22,17 @@ function [travelTime, distance] = RunTruckSim(wIH, wHO, slopeSet, slopeIndex, sl
      travelTime = 0;
      distance = 0;
      Pp = 0;
-     gears = [];
      timeWhenGearChange = 0;
-
+        
+     gears = [];
+     brakePreassures = [];
+     slopeAngles = [];
+     velocities = [];
+     temps = [];
+     slopePositions = [];
      
      while distance < slopeLength
+         
         slopeAngle = GetSlopeAngle(distance, slopeIndex, slopeSet);
         F_g = M * g * sind(slopeAngle);
         F_b = ComputeF_b(M, g, TempB, TempMax, Pp);
@@ -36,27 +44,33 @@ function [travelTime, distance] = RunTruckSim(wIH, wHO, slopeSet, slopeIndex, sl
         [Pp, newGear] = RunNeuralNetwork(wIH, wHO, networkInput);
         timeBetweenGearChange = travelTime - timeWhenGearChange;
         
-        if (timeBetweenGearChange >= gearChangeCooldown) && newGear <= 0.5
+        if (timeBetweenGearChange >= gearChangeCooldown) && newGear <= 0.3
             gear = max(gear - 1, 1);
             timeWhenGearChange = travelTime;
-        elseif (timeBetweenGearChange >= gearChangeCooldown) && newGear > 0.9
+        elseif (timeBetweenGearChange >= gearChangeCooldown) && newGear >= 0.7
             gear = min(gear + 1, 10);
             timeWhenGearChange = travelTime;
         end
 
-        gears = [gears gear];
-
-        new_velocity = velocity + (acceleration * deltaTime);
+        newVelocity = velocity + (acceleration * deltaTime);
         
         deltaTempB = ComputeDeltaTempB(Pp, deltaTempB, tau, C_h, deltaTime);
         TempB = TempAmb + deltaTempB;
-
-        if new_velocity < velocityMin || new_velocity > velocityMax || TempB > TempMax
+        slopePositions = [slopePositions distance];
+        
+        velocity = newVelocity;
+        travelTime = travelTime + deltaTime;
+        distance = distance + ((velocity + newVelocity) / 2) * deltaTime;
+        
+        slopeAngles = [slopeAngles slopeAngle];
+        gears = [gears gear];
+        brakePreassures = [brakePreassures Pp];
+        velocities = [velocities velocity];
+        temps = [temps TempB];
+        
+        if velocity < velocityMin || velocity > velocityMax || TempB > TempMax
             break;
         end
-
-        travelTime = travelTime + deltaTime;
-        distance = distance + ((velocity + new_velocity) / 2) * deltaTime;
-        
+  
      end
 end

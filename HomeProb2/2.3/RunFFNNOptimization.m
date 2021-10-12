@@ -2,7 +2,7 @@ clear all;
 
 populationSize = 100;
 numberOfInputs = 3;
-numberOfHidden = 7;
+numberOfHidden = 5;
 numberOfOutputs = 2;
 chromosomeLength = ((numberOfInputs + 1) * numberOfHidden) + ((numberOfHidden + 1) * numberOfOutputs);
 wMax = 5;
@@ -29,12 +29,9 @@ crossoverProbability = 0.25;
 
 mutationProbability = 1 / chromosomeLength;
 
-holdout = 0;
-maxHoldout = 20;
-iteration = 1;
 maxIteration = 200;
    
-while holdout < maxHoldout &&  iteration <= maxIteration
+for iteration = 1:maxIteration
     % Evaluation
     for i = 1:populationSize
           
@@ -49,7 +46,7 @@ while holdout < maxHoldout &&  iteration <= maxIteration
            bestTrainingFitness = trainingFitness;
            bestTrainingChromosome = chromosome;
               
-           disp(sprintf("Generation %d: trainingFitness: %.5f, distance: %.5f, averageVelocity: %.5f", iteration,...
+           disp(sprintf("Generation %d: trainingFitness: %.5f, total distance: %.5f, averageVelocity: %.5f", iteration,...
                     trainingFitness, trainingDistance, trainingAverageVelocity));
                   
            [validationFitness, validationDistance, validationAverageVelocity] = EvaluateIndividual(wIH, wHO,...
@@ -59,11 +56,8 @@ while holdout < maxHoldout &&  iteration <= maxIteration
            if bestValidationFitness < validationFitness
                bestValidationFitness = validationFitness;
                bestValidationChromosome = chromosome;
-               holdout = 0;
-               disp(sprintf("Generation %d: validationFitness: %.5f, distance: %.5f, averageVelocity: %.5f", iteration,...
+               disp(sprintf("Generation %d: validationFitness: %.5f, total distance: %.5f, averageVelocity: %.5f", iteration,...
                         validationFitness, validationDistance, validationAverageVelocity));
-           else
-               holdout = holdout + 1;
            end
        end 
     end
@@ -102,5 +96,5 @@ end
 
 [bestWIH, bestWHO] = DecodeChromosome(bestValidationChromosome, numberOfInputs, numberOfHidden, numberOfOutputs, wMax);
 [fitness, distance, averageVelocity] = EvaluateIndividual(bestWIH, bestWHO, testSet, testSlopes);
-disp(sprintf("Best network results: Fitness: %.5f, distance: %.5f, averageVelocity: %.5f", fitness, distance, ...
+disp(sprintf("Best network results: Fitness: %.5f, total distance: %.5f, averageVelocity: %.5f", fitness, distance, ...
          averageVelocity));
