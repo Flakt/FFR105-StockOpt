@@ -1,0 +1,14 @@
+function mutatedChromosome = Mutate(chromosome, mutationProbability, weightRange)
+    
+    numberOfGenes = length(chromosome);
+    mutatedChromosome = chromosome;
+
+    for i = 1:numberOfGenes
+        r = rand;
+        if r < mutationProbability
+            minWeight = weightRange(1);
+            maxWeight = weightRange(2);
+            mutatedChromosome(i) = 1 - chromosome(i);
+        end
+    end
+end
