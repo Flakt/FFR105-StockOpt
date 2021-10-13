@@ -1,33 +1,26 @@
 clear all;
 
-% Initialize parameters
-
 numberOfParticles = 30;
 numberOfDimensions = 2;
-numberOfIterations = 200;
+numberOfIterations = 500;
 xMin = -5;
 xMax = 5;
 alpha = 1;
-beta = 0.95;
+beta = 0.9;
 c1 = 2;
 c2 = 2;
 maxVelocity = xMax - xMin;
 minInertiaWeight = 0.35;
 maxInertiaWeight = 1.4;
 
-% TODO:
-% Implement EvaluateParticle
-% Implement UpdateVelocities
-% Implement UpdateInertiaWeight
-
 positions = InitializePositions(numberOfParticles, numberOfDimensions, xMin, xMax);
 velocities = InitializeVelocities(numberOfParticles, numberOfDimensions, xMin, xMax, alpha);
 
 bestParticlePerformances = inf(numberOfParticles, 1);
-bestParticlePositions = inf(numberOfParticles, numberOfDimensions);
+bestParticlePositions = zeros(numberOfParticles, numberOfDimensions);
 
 bestOverallPerformance = inf;
-bestOverallPosition = inf(numberOfDimensions, 1);
+bestOverallPosition = zeros(numberOfDimensions, 1);
 
 inertiaWeight = maxInertiaWeight;
 
@@ -44,8 +37,6 @@ for i = 1:numberOfIterations
             if particlePerformance < bestOverallPerformance
                 bestOverallPerformance = particlePerformance;
                 bestOverallPosition = particlePosition;
-                % Todo:
-                % Print that a new overall best has been found
                 disp(sprintf('Iteration: %d, bestPerformance: %.6f, bestPosition: (%.6f, %.6f)\n',...
                               i, bestOverallPerformance, bestOverallPosition));
             end
@@ -54,6 +45,7 @@ for i = 1:numberOfIterations
     
     velocities = UpdateVelocities(velocities, positions, bestParticlePositions, bestOverallPosition,...
                                   maxVelocity, inertiaWeight, c1, c2);
+                              
     positions = positions + velocities;
     inertiaWeight = UpdateInertiaWeight(inertiaWeight, beta, minInertiaWeight);
     

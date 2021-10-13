@@ -8,8 +8,8 @@ hold on;
 xlabel('x');
 ylabel('y');
 
-minimaList = [-3, 3.14; 3.65, -2.06; -3.44, -3.39; 2.92, 2.09];
-scatter(minimaList(:, 1), minimaList(:, 2), 'filled');
+minimaList = [-2.8037, 3.1425; 3.5786, -1.8133; -3.7826, -3.2634; 2.9870, 2.0109];
+scatter(minimaList(:, 1), minimaList(:, 2),'filled', 'red');
 
 
 function z_space = compute(x_space, y_space)

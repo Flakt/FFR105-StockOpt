@@ -1,15 +1,30 @@
-function deltaVelocities = UpdateVelocities(velocities, positions, bestParticlePositions,...
+function newVelocities = UpdateVelocities(velocities, positions, bestParticlePositions,...
                            bestOverallPosition, maxVelocity, inertiaWeight, c1, c2)
    
-   [numberOfParticles, numberOfDimensions] = size(velocities);                    
-   deltaVelocities = zeros(numberOfParticles, numberOfDimensions);
+   [numberOfParticles, numberOfDimensions] = size(velocities);
+   newVelocities = zeros(numberOfParticles, numberOfDimensions);
+   r = rand;
+   q = rand;
    
-   socialComponent = c2 * rand(size(positions)).* (bestOverallPosition - positions);
-   cognitiveComponent = c1 * rand(size(positions)).* (bestParticlePositions - positions);
-   
-   deltaVelocities = inertiaWeight * velocities + cognitiveComponent + socialComponent;
-   
-   deltaVelocities(velocities > maxVelocity) = maxVelocity;
-   deltaVelocities(velocities < -maxVelocity) = -maxVelocity;
-
+   for i = 1:numberOfParticles
+       cognitiveComponent = c1 * q .* (bestParticlePositions(i, :) - positions(i, :));
+       socialComponent = c2 * r .* (bestOverallPosition - positions(i, :));
+       newVelocity = (inertiaWeight * velocities(i, :)) + cognitiveComponent + socialComponent;
+           
+       if newVelocity(1) < -maxVelocity
+           newVelocity(1) = -maxVelocity;
+       elseif newVelocity(1) > maxVelocity
+           newVelocity(1) = maxVelocity;
+       end
+           
+       if newVelocity(2) < -maxVelocity
+           newVelocity(2) = -maxVelocity;
+       elseif newVelocity(2) > maxVelocity
+           newVelocity(2) = maxVelocity;
+       end
+           
+       newVelocities(i, :) = newVelocity;
+      
+   end
+    
 end
