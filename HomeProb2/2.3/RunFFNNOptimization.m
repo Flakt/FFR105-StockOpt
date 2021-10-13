@@ -2,7 +2,7 @@ clear all;
 
 populationSize = 100;
 numberOfInputs = 3;
-numberOfHidden = 5;
+numberOfHidden = 10;
 numberOfOutputs = 2;
 chromosomeLength = ((numberOfInputs + 1) * numberOfHidden) + ((numberOfHidden + 1) * numberOfOutputs);
 wMax = 5;
@@ -30,6 +30,11 @@ crossoverProbability = 0.25;
 mutationProbability = 1 / chromosomeLength;
 
 maxIteration = 200;
+
+bestTrainingFitnesses = [];
+bestValidationFitnesses = [];
+bestTrainingIterations = [];
+bestValidationIterations = [];
    
 for iteration = 1:maxIteration
     % Evaluation
@@ -45,6 +50,9 @@ for iteration = 1:maxIteration
        if bestTrainingFitness < trainingFitness
            bestTrainingFitness = trainingFitness;
            bestTrainingChromosome = chromosome;
+           
+           bestTrainingFitnesses = [bestTrainingFitnesses trainingFitness];
+           bestTrainingIterations = [bestTrainingIterations iteration];
               
            disp(sprintf("Generation %d: trainingFitness: %.5f, total distance: %.5f, averageVelocity: %.5f", iteration,...
                     trainingFitness, trainingDistance, trainingAverageVelocity));
@@ -56,6 +64,10 @@ for iteration = 1:maxIteration
            if bestValidationFitness < validationFitness
                bestValidationFitness = validationFitness;
                bestValidationChromosome = chromosome;
+               
+               bestValidationFitnesses = [bestValidationFitnesses validationFitness];
+               bestValidationIterations = [bestValidationIterations iteration];
+               
                disp(sprintf("Generation %d: validationFitness: %.5f, total distance: %.5f, averageVelocity: %.5f", iteration,...
                         validationFitness, validationDistance, validationAverageVelocity));
            end
@@ -90,11 +102,30 @@ for iteration = 1:maxIteration
         temporaryPopulation(i, :) = mutatedChromosome;
     end
     population = temporaryPopulation;
-    iteration = iteration + 1;
-       
+   
+    
 end
 
 [bestWIH, bestWHO] = DecodeChromosome(bestValidationChromosome, numberOfInputs, numberOfHidden, numberOfOutputs, wMax);
 [fitness, distance, averageVelocity] = EvaluateIndividual(bestWIH, bestWHO, testSet, testSlopes);
 disp(sprintf("Best network results: Fitness: %.5f, total distance: %.5f, averageVelocity: %.5f", fitness, distance, ...
          averageVelocity));
+
+bestTrainingFitnesses = nonzeros(bestTrainingFitnesses);
+bestValidationFitnesses = nonzeros(bestValidationFitnesses);
+     
+subplot(2, 1, 1);
+hold on;
+title("Training Fitness");
+axis([0 maxIteration 0 bestTrainingFitness + 100]);
+plot(bestTrainingIterations, bestTrainingFitnesses);
+scatter(bestTrainingIterations, bestTrainingFitnesses, 'filled', 'red');
+
+subplot(2, 1, 2);
+hold on;
+title("Validation Fitness");
+axis([0 maxIteration 0 bestValidationFitness + 100]);
+plot(bestValidationIterations, bestValidationFitnesses);
+scatter(bestValidationIterations, bestValidationFitnesses, 'filled', 'red');
+
+     
